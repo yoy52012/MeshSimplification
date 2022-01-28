@@ -1,4 +1,4 @@
 # Mesh Simplification
 
-A Implement of  [Surface Simplification Using Quadric Error Metrics](https://github.com/matthew-rister/mesh_simplification/blob/main/MeshSimplification/docs/surface_simplification.pdf).
+A Implement of  [Surface Simplification Using Quadric Error Metrics](http://www.cs.cmu.edu/~garland/Papers/quadrics.pdf).
 

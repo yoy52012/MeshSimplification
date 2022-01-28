@@ -94,4 +94,3 @@ cmake-build-debug
 bin/
 out/
 .vs/
-third_party/
