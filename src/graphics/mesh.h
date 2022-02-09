@@ -45,22 +45,29 @@ public:
 	Mesh& operator=(Mesh&& mesh) noexcept;
 
 	/** \brief Gets the mesh vertex positions. */
-	[[nodiscard]] const std::vector<glm::vec3>& positions() const noexcept { return positions_; }
+	[[nodiscard]] const std::vector<glm::vec3>& GetPositions() const noexcept { return positions_; }
 
 	/** \brief Gets the mesh texture coordinates. */
-	[[nodiscard]] const std::vector<glm::vec2>& texture_coordinates() const noexcept { return texture_coordinates_; }
+	[[nodiscard]] const std::vector<glm::vec2>& GetTexture_coordinates() const noexcept { return texture_coordinates_; }
 
 	/** \brief Gets the mesh normals. */
-	[[nodiscard]] const std::vector<glm::vec3>& normals() const noexcept { return normals_; }
+	[[nodiscard]] const std::vector<glm::vec3>& GetNormals() const noexcept { return normals_; }
 
 	/** \brief Gets the mesh indices corresponding to a triangle face for every three consecutive integers. */
-	[[nodiscard]] const std::vector<GLuint>& indices() const noexcept { return indices_; }
+	[[nodiscard]] const std::vector<GLuint>& GetIndices() const noexcept { return indices_; }
 
 	/** \brief Gets the affine transform to apply to the mesh in model space. */
-	[[nodiscard]] const glm::mat4& model_transform() const noexcept { return model_transform_; }
+	[[nodiscard]] const glm::mat4& GetModelTransform() const noexcept { return model_transform_; }
+
+    /** \brief Gets the min of mesh bounding box. */
+    [[nodiscard]] const glm::vec3& GetBoxMin() const noexcept { return bmin_; }
+
+    /** \brief Gets the max of mesh bounding box. */
+    [[nodiscard]] const glm::vec3& GetBoxMax() const noexcept { return bmax_; }
 
 	/** \brief Renders the mesh to the current render target. */
-	void Render() const noexcept {
+	void Render() const noexcept 
+	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glBindVertexArray(vertex_array_);
@@ -76,7 +83,8 @@ public:
 	 * \brief Scales the mesh in local object space.
 	 * \param xyz The x,y,z directions to scale the mesh.
 	 */
-	void Scale(const glm::vec3& xyz) {
+	void Scale(const glm::vec3& xyz) 
+	{
 		model_transform_ = glm::scale(model_transform_, xyz);
 	}
 
@@ -85,7 +93,8 @@ public:
 	 * \param axis The axis to rotate the mesh about.
 	 * \param angle The rotation angle specified in radians.
 	 */
-	void Rotate(const glm::vec3& axis, const GLfloat angle) {
+	void Rotate(const glm::vec3& axis, const GLfloat angle) 
+	{
 		model_transform_ = glm::rotate(model_transform_, angle, axis);
 	}
 
@@ -93,11 +102,12 @@ public:
 	 * \brief Translates the mesh in local object space.
 	 * \param xyz The x,y,z directions to translate the mesh.
 	 */
-	void Translate(const glm::vec3& xyz) {
+	void Translate(const glm::vec3& xyz) 
+	{
 		model_transform_ = glm::translate(model_transform_, xyz);
 	}
 
-public:
+private:
 	std::vector<glm::vec3> positions_;
 	std::vector<glm::vec2> texture_coordinates_;
 	std::vector<glm::vec3> normals_;

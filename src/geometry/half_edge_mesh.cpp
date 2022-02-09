@@ -199,9 +199,9 @@ vec3 ComputeWeightedVertexNormal(const Vertex& v0) {
 }
 }
 
-HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.model_transform()} {
-	const auto& positions = mesh.positions();
-	const auto& indices = mesh.indices();
+HalfEdgeMesh::HalfEdgeMesh(const Mesh& mesh) : model_transform_{mesh.GetModelTransform()} {
+	const auto& positions = mesh.GetPositions();
+	const auto& indices = mesh.GetIndices();
 
 	for (size_t i = 0; i < positions.size(); ++i) {
 		vertices_.emplace(i, make_shared<Vertex>(i, positions[i]));

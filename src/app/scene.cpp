@@ -56,7 +56,7 @@ Scene::Scene(Window& window, Camera& camera, ShaderProgram& shader_program)
 
 	UpdateProjectionTransform();
 
-	LoadObject("");
+	LoadObject(ASSETS_FOLDER"/models/bunny.obj");
 
 	for (size_t i = 0; i < kPointLights.size(); ++i) {
 		const auto& [position, color, attenuation] = kPointLights[i];
@@ -68,19 +68,21 @@ Scene::Scene(Window& window, Camera& camera, ShaderProgram& shader_program)
 
 void Scene::LoadObject(const std::string_view filepath) noexcept
 {
-    //auto mesh = obj_loader::LoadMesh(ASSETS_FOLDER"models/bunny.obj");
-    auto mesh = obj_loader::LoadMesh1(ASSETS_FOLDER"models/SCE_S_Bind_Defenders_Building_0001_Internal.OBJ");
+    auto mesh = obj_loader::LoadMesh(filepath);
 
-    float maxExtent = 0.5f * (mesh.bmax_[0] - mesh.bmin_[0]);
-    if (maxExtent < 0.5f * (mesh.bmax_[1] - mesh.bmin_[1])) {
-        maxExtent = 0.5f * (mesh.bmax_[1] - mesh.bmin_[1]);
+	const auto& bmax = mesh.GetBoxMax();
+	const auto& bmin = mesh.GetBoxMin();
+
+    float maxExtent = 0.5f * (bmax[0] - bmin[0]);
+    if (maxExtent < 0.5f * (bmax[1] - bmin[1])) {
+        maxExtent = 0.5f * (bmax[1] - bmin[1]);
     }
-    if (maxExtent < 0.5f * (mesh.bmax_[2] - mesh.bmin_[2])) {
-        maxExtent = 0.5f * (mesh.bmax_[2] - mesh.bmin_[2]);
+    if (maxExtent < 0.5f * (bmax[2] - bmin[2])) {
+        maxExtent = 0.5f * (bmax[2] - bmin[2]);
     }
 
     mesh.Scale(vec3{ 1.0f / maxExtent });
-    mesh.Translate(vec3{ -0.5 * (mesh.bmax_[0] + mesh.bmin_[0]), -0.5 * (mesh.bmax_[1] + mesh.bmin_[1]), -0.5 * (mesh.bmax_[2] + mesh.bmin_[2]) });
+    mesh.Translate(vec3{ -0.5 * (bmax[0] + bmin[0]), -0.5 * (bmax[1] + bmin[1]), -0.5 * (bmax[2] + bmin[2]) });
 
     scene_objects_.push_back(SceneObject{
         .mesh = move(mesh),
@@ -96,7 +98,7 @@ void Scene::Render(const float delta_time)
 
 	for (const auto& [mesh, material] : scene_objects_) {
 
-		const auto view_model_transform = view_transform * mesh.model_transform();
+		const auto view_model_transform = view_transform * mesh.GetModelTransform();
 		shader_program_.SetUniform("view_model_transform", view_model_transform);
 
 		// generally, normals should be transformed by the upper 3x3 inverse transpose of the view-model matrix, however,
@@ -205,7 +207,7 @@ void Scene::HandleContinuousInput(const float delta_time)
 		if (prev_cursor_position) {
 			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_.GetSize())) {
 				const auto& [view_rotation_axis, angle] = *axis_and_angle;
-				const auto view_model_transform = camera_.GetViewTansform() * mesh.model_transform();
+				const auto view_model_transform = camera_.GetViewTansform() * mesh.GetModelTransform();
 				const auto view_model_inverse = mat3{transpose(view_model_transform)}; // for the same reasons noted above
 				const auto model_rotation_axis = view_model_inverse * view_rotation_axis;
 				mesh.Rotate(normalize(model_rotation_axis), angle);
