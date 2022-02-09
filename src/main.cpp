@@ -29,14 +29,21 @@ int currentMode = 0;
 int girdResolution = MAX_GRID;
 int maxNumberPerLeaf = MIN_OCTREE;
 
-bool regenerate = false;
+bool simplify = false;
 bool backToOriginal = false;
-bool showValence = false; 
-bool wireFrame = false;
-bool lighting = true;
+
+bool show_valence = false; 
+bool show_wireframe = false;
+bool show_lighting = true;
+
 int camPlacement = 0;
 float lightPlacement = 0.5;
 std::string loadedObjName = "";
+
+
+static int draw_mode = 0;
+
+static int material_type_index = 0;
 
 // Those light colors are better suited with a thicker font than the default one + FrameBorder
 // From https://github.com/procedural/gpulib/blob/master/gpulib_imgui.h
@@ -161,17 +168,30 @@ void renderGui() {
 
         {
             ImGui::SetCursorPosX(ImGui::GetWindowSize().x * 0.2f);
-            if (ImGui::Button("Simplify", ImVec2(ImGui::GetWindowSize().x * 0.5f, 0.0f))) regenerate = true;
+            if (ImGui::Button("Simplify", ImVec2(ImGui::GetWindowSize().x * 0.5f, 0.0f))) simplify = true;
         }
+
         ImGui::Dummy(ImVec2(0.0f, 20.0f));
         ImGui::Separator();
         ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
-        ImGui::Checkbox("Valence", &showValence);
-        ImGui::Dummy(ImVec2(0.0f, 3.0f));
-        ImGui::Checkbox("Wireframe", &wireFrame);
-        ImGui::Dummy(ImVec2(0.0f, 3.0f));
-        ImGui::Checkbox("Lighting", &lighting);
+        {
+            ImGui::Checkbox("Valence", &show_valence);
+            ImGui::Dummy(ImVec2(0.0f, 3.0f));
+            ImGui::Checkbox("Wireframe", &show_wireframe);
+            ImGui::Dummy(ImVec2(0.0f, 3.0f));
+            ImGui::Checkbox("Lighting", &show_lighting);
+        }
+        
+        ImGui::Dummy(ImVec2(0.0f, 20.0f));
+        ImGui::Separator();
+        ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
+        {
+            ImGui::Text("MaterialType");
+            ImGui::SameLine();
+            ImGui::Combo("##MaterialType", &material_type_index, MaterialTypeArray, IM_ARRAYSIZE(MaterialTypeArray));
+        }
 
         ImGui::Dummy(ImVec2(0.0f, 20.0f));
         ImGui::Separator();
@@ -240,9 +260,22 @@ int main() {
 
 
         for (auto previous_time = glfwGetTime(), delta_time = 0.; !window.IsClosed();) {
+            
             window.Update();
 
-            scene.Render(static_cast<float>(delta_time));
+
+            if (simplify)
+                scene.Simplify();
+
+            scene.SetMaterialType(static_cast<MaterialType>(material_type_index));
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            if (show_lighting)
+                scene.Render(DrawMode::FILL);
+            if (show_wireframe)
+                scene.Render(DrawMode::LINE);
+
 
             const auto current_time = glfwGetTime();
             delta_time = current_time - previous_time;
@@ -260,7 +293,7 @@ int main() {
         }
     }
     catch (const exception& e) {
-        cerr << e.what() << endl;
+        std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
     }
 

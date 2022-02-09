@@ -132,6 +132,12 @@ Window::Window(
 	glfwSwapInterval(1);
 	
 	glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* window, const int width, const int height) noexcept {
+        int fb_w, fb_h;
+        // Get actual framebuffer size.
+        glfwGetFramebufferSize(window, &fb_w, &fb_h);
+
+        glViewport(0, 0, fb_w, fb_h);
+
 		if (const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window))) {
 			self->on_resize_callback_(width, height);
 		}

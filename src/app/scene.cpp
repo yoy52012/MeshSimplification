@@ -17,8 +17,8 @@ using namespace std;
 
 static  Scene::ViewFrustum kViewFrustrum{
     .field_of_view_y = glm::radians(45.f),
-    .z_near = .1f,
-    .z_far = 100.f
+    .z_near = 0.01f,
+    .z_far = 100.0f
 };
 
 //static  Scene::Camera kCamera{
@@ -48,6 +48,7 @@ Scene::Scene(Window& window, Camera& camera, ShaderProgram& shader_program)
 {
 	window.set_on_key_press([this](const auto key_code) { HandleKeyPress(key_code); });
 	
+    window.SetWindowSizeCallback([this](int width, int height) {HandleWindowResize(width, height); });
 	window.SetMouseButtonCallback([this](int button, int action, int mods) { HandleMouseButtonClick(button, action, mods); });
 	window.SetCursorPosCallback([this](double mouse_x, double mouse_y) { HandleMouseMove(mouse_x, mouse_y); });
 
@@ -86,13 +87,33 @@ void Scene::LoadObject(const std::string_view filepath) noexcept
 
     scene_objects_.push_back(SceneObject{
         .mesh = move(mesh),
-        .material = Material::FromType(MaterialType::kSilver)
+        .material = Material::FromType(current_mtl_type_)
         });
 }
 
-void Scene::Render(const float delta_time) 
+void Scene::SetMaterialType(gfx::MaterialType mtl_type) noexcept
 {
-	//HandleContinuousInput(delta_time);
+    if (current_mtl_type_ != mtl_type) {
+
+        for (auto& scene_object :scene_objects_)
+        {
+            scene_object.material = Material::FromType(mtl_type);
+        }
+
+        current_mtl_type_ = mtl_type;
+    }
+}
+
+void Scene::Simplify() noexcept
+{
+    auto& mesh = scene_objects_[active_scene_object_].mesh;
+    mesh = mesh::Simplify(mesh, 0.5f);
+}
+
+
+void Scene::Render(gfx::DrawMode draw_mode)
+{
+
 	auto view_transform = camera_.GetViewTansform();
 	UpdateProjectionTransform();
 
@@ -112,7 +133,7 @@ void Scene::Render(const float delta_time)
 		shader_program_.SetUniform("material.specular", material.specular());
 		shader_program_.SetUniform("material.shininess", material.shininess() * 128.f);
 
-		mesh.Render();
+		mesh.Draw(draw_mode);
 	}
 }
 
@@ -175,46 +196,8 @@ void Scene::HandleKeyPress(const int key_code) {
     }
 }
 
-void Scene::HandleContinuousInput(const float delta_time) 
+void Scene::HandleWindowResize(int width, int height)
 {
-	if (active_scene_object_ >= static_cast<int>(scene_objects_.size())) return;
-
-	static optional<dvec2> prev_cursor_position{};
-	const auto translate_step = 1.25f * delta_time;
-	const auto scale_step = .75f * delta_time;
-	auto& mesh = scene_objects_[active_scene_object_].mesh;
-
-	if (window_.IsKeyPressed(GLFW_KEY_W)) {
-		mesh.Translate(vec3{0.f, translate_step, 0.f});
-	} else if (window_.IsKeyPressed(GLFW_KEY_X)) {
-		mesh.Translate(vec3{0.f, -translate_step, 0.f});
-	}
-
-	if (window_.IsKeyPressed(GLFW_KEY_A)) {
-		mesh.Translate(vec3{-translate_step, 0.f, 0.f});
-	} else if (window_.IsKeyPressed(GLFW_KEY_D)) {
-		mesh.Translate(vec3{translate_step, 0.f, 0.f});
-	}
-
-	if (window_.IsKeyPressed(GLFW_KEY_LEFT_SHIFT) && window_.IsKeyPressed(GLFW_KEY_EQUAL)) {
-		mesh.Scale(vec3{1.f + scale_step});
-	} else if (window_.IsKeyPressed(GLFW_KEY_MINUS)) {
-		mesh.Scale(vec3{1.f - scale_step});
-	}
-
-	if (window_.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-		const auto cursor_position = window_.GetCursorPosition();
-		if (prev_cursor_position) {
-			if (const auto axis_and_angle = arcball::GetRotation(*prev_cursor_position, cursor_position, window_.GetSize())) {
-				const auto& [view_rotation_axis, angle] = *axis_and_angle;
-				const auto view_model_transform = camera_.GetViewTansform() * mesh.GetModelTransform();
-				const auto view_model_inverse = mat3{transpose(view_model_transform)}; // for the same reasons noted above
-				const auto model_rotation_axis = view_model_inverse * view_rotation_axis;
-				mesh.Rotate(normalize(model_rotation_axis), angle);
-			}
-		}
-		prev_cursor_position = cursor_position;
-	} else if (prev_cursor_position.has_value()) {
-		prev_cursor_position = nullopt;
-	}
+    UpdateProjectionTransform();
 }
+

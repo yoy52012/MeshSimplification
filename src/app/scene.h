@@ -19,7 +19,9 @@ class Scene {
 public:
 	Scene(Window& window, Camera& camera, gfx::ShaderProgram& shader_program);
 	void LoadObject(const std::string_view filepath) noexcept;
-	void Render(float delta_time);
+	void SetMaterialType(gfx::MaterialType mtl_type) noexcept;
+	void Simplify() noexcept;
+	void Render(gfx::DrawMode draw_mode);
 
 public:
 	struct  ViewFrustum {
@@ -42,10 +44,9 @@ public:
 private:
 	void UpdateProjectionTransform();
 	void HandleKeyPress(int key_code);
+	void HandleWindowResize(int width, int height);
 	void HandleMouseButtonClick(int button, int action, int mods);
 	void HandleMouseMove(double mouse_x, double mouse_y);
-	void HandleContinuousInput(float delta_time);
-
 
 	Window& window_;
 	Camera& camera_;
@@ -54,6 +55,6 @@ private:
 	std::vector<SceneObject> scene_objects_;
 	int active_scene_object_ = 0;
 
-
+	gfx::MaterialType current_mtl_type_ = gfx::MaterialType::Brass;
 };
 }

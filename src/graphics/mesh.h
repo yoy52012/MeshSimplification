@@ -10,6 +10,13 @@
 
 namespace gfx {
 
+	enum class DrawMode
+	{
+		FILL,
+		LINE
+	};
+
+
 /** \brief A renderable triangle mesh. */
 class Mesh {
 
@@ -66,9 +73,22 @@ public:
     [[nodiscard]] const glm::vec3& GetBoxMax() const noexcept { return bmax_; }
 
 	/** \brief Renders the mesh to the current render target. */
-	void Render() const noexcept 
+	void Draw(DrawMode draw_mode) const noexcept
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		switch (draw_mode)
+		{
+		case gfx::DrawMode::FILL:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            glEnable(GL_POLYGON_OFFSET_FILL);
+			break;
+		case gfx::DrawMode::LINE:
+			glDisable(GL_POLYGON_OFFSET_FILL);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			break;
+		default:
+			break;
+		}
 
 		glBindVertexArray(vertex_array_);
 		if (element_buffer_) {
