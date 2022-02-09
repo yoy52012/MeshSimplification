@@ -32,8 +32,10 @@ public:
 		std::vector<glm::vec3> positions,
 		std::vector<glm::vec2> texture_coordinates = {},
 		std::vector<glm::vec3> normals = {},
-		std::vector<GLuint> indices = {},
-		glm::mat4 model_transform = glm::mat4{1.f});
+		std::vector<unsigned int> indices = {},
+		glm::mat4 model_transform = glm::mat4{1.f},
+        glm::vec3 bmin = glm::vec3(0.0),
+        glm::vec3 bmax = glm::vec3(0.0));
 	~Mesh();
 
 	Mesh(const Mesh&) = delete;
@@ -95,12 +97,19 @@ public:
 		model_transform_ = glm::translate(model_transform_, xyz);
 	}
 
-private:
-	GLuint vertex_array_ = 0, vertex_buffer_ = 0, element_buffer_ = 0;
+public:
 	std::vector<glm::vec3> positions_;
 	std::vector<glm::vec2> texture_coordinates_;
 	std::vector<glm::vec3> normals_;
 	std::vector<GLuint> indices_;
 	glm::mat4 model_transform_;
+	glm::vec3 bmin_;
+	glm::vec3 bmax_;
+
+private:
+	GLuint vertex_array_ = 0;
+	GLuint vertex_buffer_ = 0;
+	GLuint element_buffer_ = 0;
+
 };
 }

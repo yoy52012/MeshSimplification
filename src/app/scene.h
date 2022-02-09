@@ -7,6 +7,7 @@
 #include <glm/vec4.hpp>
 
 #include "window.h"
+#include "camera.h"
 #include "graphics/material.h"
 #include "graphics/mesh.h"
 #include "graphics/shader_program.h"
@@ -16,7 +17,8 @@ namespace app {
 class Scene {
 
 public:
-	Scene(Window& window, gfx::ShaderProgram& shader_program);
+	Scene(Window& window, Camera& camera, gfx::ShaderProgram& shader_program);
+	void LoadObject(const std::string_view filepath) noexcept;
 	void Render(float delta_time);
 
 public:
@@ -24,12 +26,6 @@ public:
 		float field_of_view_y;
 		float z_near;
 		float z_far;
-	};
-
-	struct Camera {
-		glm::vec3 eye;
-		glm::vec3 center;
-		glm::vec3 up;
 	};
 
 	struct SceneObject {
@@ -45,14 +41,19 @@ public:
 
 private:
 	void UpdateProjectionTransform();
-	void HandleDiscreteKeyPress(int key_code);
+	void HandleKeyPress(int key_code);
+	void HandleMouseButtonClick(int button, int action, int mods);
+	void HandleMouseMove(double mouse_x, double mouse_y);
 	void HandleContinuousInput(float delta_time);
 
 
 	Window& window_;
+	Camera& camera_;
+
 	gfx::ShaderProgram& shader_program_;
 	std::vector<SceneObject> scene_objects_;
 	int active_scene_object_ = 0;
-	glm::mat4 view_transform_;
+
+
 };
 }

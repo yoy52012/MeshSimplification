@@ -209,17 +209,19 @@ void renderGui() {
 
 }
 
+
 int main() {
 
     try {
-        constexpr auto kWindowDimensions = make_pair(gWidth, gHeight);
-        constexpr auto kOpenGlVersion = make_pair(4, 5);
-        Window window{ "Mesh Simplification", kWindowDimensions, kOpenGlVersion };
+        constexpr auto kWindowDimensions = std::make_pair(gWidth, gHeight);
+        constexpr auto kOpenGlVersion = std::make_pair(4, 5);
+        Window window("Mesh Simplification", kWindowDimensions, kOpenGlVersion);
+        Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f));
         std::string vertShader = SHADER_FOLDER + std::string("vertex.glsl");
         std::string fragShader = SHADER_FOLDER + std::string("fragment.glsl");
         ShaderProgram shader_program{ vertShader, fragShader };
 
-        Scene scene{ window, shader_program };
+        Scene scene(window, camera, shader_program);
 
 
         /**

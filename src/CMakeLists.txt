@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.17)
-set(PROJECT_NAME "MeshSimplification")
-project(${PROJECT_NAME})
 
 include(../cmake/CommonMacros.txt)
 
 include_directories(../third_party/glfw/include)
 include_directories(../third_party/glad/include)
 include_directories(../third_party/glm)
+include_directories(../third_party/tiny_obj_loader)
+include_directories(../third_party/trackball)
 
 include_directories(.)
 
@@ -36,5 +36,5 @@ if(MSVC)
 	set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 endif()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw imgui)
+target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw imgui tiny_obj_loader)
 

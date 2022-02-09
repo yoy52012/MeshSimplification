@@ -118,8 +118,8 @@ void InitializeGlad() {
 Window::Window(
 	const string_view title,
 	const pair<const int, const int>& window_dimensions,
-	const pair<const int, const int>& opengl_version) {
-
+	const pair<const int, const int>& opengl_version) 
+{
 	InitializeGlfw(opengl_version);
 
 	const auto [width, height] = window_dimensions;
@@ -127,12 +127,16 @@ Window::Window(
 	if (!window_) 
 		throw runtime_error{"Window creation failed"};
 
-
 	glfwSetWindowUserPointer(window_, this);
 	glfwMakeContextCurrent(window_);
-	glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* /*window*/, const int width, const int height) noexcept {
-		glViewport(0, 0, width, height);
+	glfwSwapInterval(1);
+	
+	glfwSetFramebufferSizeCallback(window_, [](GLFWwindow* window, const int width, const int height) noexcept {
+		if (const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window))) {
+			self->on_resize_callback_(width, height);
+		}
 	});
+
 	glfwSetKeyCallback(
 		window_,
 		[](GLFWwindow* window, const int key, const int /*scancode*/, const int action, const int /*modifiers*/) noexcept {
@@ -146,8 +150,25 @@ Window::Window(
 			}
 		});
 
-    InitializeGlad();
+	glfwSetMouseButtonCallback(
+		window_,
+		[](GLFWwindow* window, int button, int action, int mods) noexcept {
+		   	
+			if (const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window))) {
+				self->on_mouse_button_callback_(button, action, mods);
+			}
+		});
 
+	glfwSetCursorPosCallback(
+		window_,
+		[](GLFWwindow* window, double mouse_x, double mouse_y) noexcept {
+			
+			if (const auto* const self = static_cast<Window*>(glfwGetWindowUserPointer(window))) {
+				self->on_cursor_callback_(mouse_x, mouse_y);
+			}
+	    });
+
+    InitializeGlad();
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -158,4 +179,39 @@ Window::~Window() {
 	if (window_) 
 		glfwDestroyWindow(window_);
 	glfwTerminate();
+}
+
+std::pair<int, int> Window::GetSize() const noexcept
+{
+    int width, height;
+    glfwGetWindowSize(window_, &width, &height);
+    return { width, height };
+}
+
+glm::dvec2 Window::GetCursorPosition() const noexcept
+{
+    double x, y;
+    glfwGetCursorPos(window_, &x, &y);
+    return { x, y };
+}
+
+bool Window::IsClosed() const noexcept
+{
+    return glfwWindowShouldClose(window_);
+}
+
+bool Window::IsKeyPressed(const int key_code) const noexcept
+{
+    return glfwGetKey(window_, key_code) == GLFW_PRESS;
+}
+
+bool Window::IsMouseButtonPressed(const int button_code) const noexcept
+{
+    return glfwGetMouseButton(window_, button_code);
+}
+
+void Window::Update() const noexcept
+{
+    glfwSwapBuffers(window_);
+    glfwPollEvents();
 }

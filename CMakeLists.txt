@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
-project(Renderer)
+set(PROJECT_NAME "MeshSimplification")
+project(${PROJECT_NAME})
 
 # GLFW
 set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
@@ -28,8 +29,14 @@ include_directories("${CMAKE_SOURCE_DIR}/third_party/glm")
 # stb
 include_directories("${CMAKE_SOURCE_DIR}/third_party/stb-master")
 
+# tiny obj loader
+include_directories("${CMAKE_SOURCE_DIR}/third_party/tiny_obj_loader")
+add_subdirectory(third_party/tiny_obj_loader)
+
+include_directories("${CMAKE_SOURCE_DIR}/third_party/trackball")
+
 
 add_definitions(-DSHADER_FOLDER="${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
 add_definitions(-DASSETS_FOLDER="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 
-add_subdirectory(example)
+add_subdirectory(src)

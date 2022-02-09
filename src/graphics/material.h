@@ -37,87 +37,87 @@ public:
 	static Material FromType(const MaterialType material_type) {
 		switch (material_type) {
 			case MaterialType::kBrass: {
-                glm::vec3 kAmbient{ 0.329412f, 0.223529f, 0.027451f };
-                glm::vec3 kDiffuse{ .780392f, .568627f, .113725f };
-                glm::vec3 kSpecular{ .992157f, .941176f, .807843f };
-                auto kShininess = .21794872f;
+                const glm::vec3 kAmbient{ 0.329412f, 0.223529f, 0.027451f };
+                const glm::vec3 kDiffuse{ .780392f, .568627f, .113725f };
+                const glm::vec3 kSpecular{ .992157f, .941176f, .807843f };
+                const float kShininess = .21794872f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
 			case MaterialType::kBronze: {
-                glm::vec3 kAmbient{ .2125f, .1275f, .054f };
-                glm::vec3 kDiffuse{ .714f, .4284f, .18144f };
-                glm::vec3 kSpecular{ .393548f, .271906f, .166721f };
-                auto kShininess = .2f;
+                const glm::vec3 kAmbient{ .2125f, .1275f, .054f };
+                const glm::vec3 kDiffuse{ .714f, .4284f, .18144f };
+                const glm::vec3 kSpecular{ .393548f, .271906f, .166721f };
+                const float kShininess = .2f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			};
 			case MaterialType::kChrome: {
-				glm::vec3 kAmbient{.25f, .25f, .25f};
-				glm::vec3 kDiffuse{.4f, .4f, .4f};
-				glm::vec3 kSpecular{.774597f, .774597f, .774597f};
-				auto kShininess = .6f;
+				const glm::vec3 kAmbient{.25f, .25f, .25f};
+				const glm::vec3 kDiffuse{.4f, .4f, .4f};
+				const glm::vec3 kSpecular{.774597f, .774597f, .774597f};
+				const float kShininess = .6f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
 			case MaterialType::kCopper: {
-				glm::vec3 kAmbient{.19125f, .0735f, .0225f};
-				glm::vec3 kDiffuse{.7038f, .27048f, .0828f};
-				glm::vec3 kSpecular{.256777f, .137622f, .086014f};
-				auto kShininess = .1f;
+				const glm::vec3 kAmbient{.19125f, .0735f, .0225f};
+				const glm::vec3 kDiffuse{.7038f, .27048f, .0828f};
+				const glm::vec3 kSpecular{.256777f, .137622f, .086014f};
+				const float kShininess = .1f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
 			case MaterialType::kEmerald: {
-				glm::vec3 kAmbient{.0215f, .1745f, .0215f};
-				glm::vec3 kDiffuse{.07568f, .61424f, .07568f};
-				glm::vec3 kSpecular{.633f, .727811f, .633f};
-				auto kShininess = .6f;
+				const glm::vec3 kAmbient{.0215f, .1745f, .0215f};
+				const glm::vec3 kDiffuse{.07568f, .61424f, .07568f};
+				const glm::vec3 kSpecular{.633f, .727811f, .633f};
+				const float kShininess = .6f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
 			case MaterialType::kGold: {
-				glm::vec3 kAmbient{.24725f, .1995f, .0745f};
-				glm::vec3 kDiffuse{.75164f, .60648f, .22648f};
-				glm::vec3 kSpecular{.628281f, .555802f, .366065f};
-				auto kShininess = .4f;
+				const glm::vec3 kAmbient{.24725f, .1995f, .0745f};
+				const glm::vec3 kDiffuse{.75164f, .60648f, .22648f};
+				const glm::vec3 kSpecular{.628281f, .555802f, .366065f};
+				const float kShininess = .4f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
 			case MaterialType::kJade: {
-                glm::vec3 kAmbient{ .135f, .2225f, .1575f };
-                glm::vec3 kDiffuse{ .54f, .89f, .63f };
-                glm::vec3 kSpecular{ .316228f, .316228f, .316228f };
-                auto kShininess = .1f;
+                const glm::vec3 kAmbient{ .135f, .2225f, .1575f };
+                const glm::vec3 kDiffuse{ .54f, .89f, .63f };
+                const glm::vec3 kSpecular{ .316228f, .316228f, .316228f };
+                const float kShininess = .1f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
 			case MaterialType::kObsidian: {
-				glm::vec3 kAmbient{.05375f, .05f, .06625f};
-				glm::vec3 kDiffuse{.18275f, .17f, .22525f};
-				glm::vec3 kSpecular{.332741f, .328634f, .346435f};
-				auto kShininess = .3f;
+                const glm::vec3 kAmbient{ .05375f, .05f, .06625f };
+                const glm::vec3 kDiffuse{ .18275f, .17f, .22525f };
+                const glm::vec3 kSpecular{ .332741f, .328634f, .346435f };
+                const float kShininess = .3f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
 			case MaterialType::kPearl: {
-                glm::vec3 kAmbient{ .25f, .20725f, .20725f };
-                glm::vec3 kDiffuse{ 1.f, .829f, .829f };
-                glm::vec3 kSpecular{ .296648f, .296648f, .296648f };
-				auto kShininess = .088f;
+                const glm::vec3 kAmbient{ .25f, .20725f, .20725f };
+                const glm::vec3 kDiffuse{ 1.f, .829f, .829f };
+                const glm::vec3 kSpecular{ .296648f, .296648f, .296648f };
+				const float kShininess = .088f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
 			case MaterialType::kRuby: {
-				glm::vec3 kAmbient{.1745f, .01175f, .01175f};
-				glm::vec3 kDiffuse{.61424f, .04136f, .04136f};
-				glm::vec3 kSpecular{.727811f, .626959f, .626959f};
-				auto kShininess = .6f;
+				const glm::vec3 kAmbient{.1745f, .01175f, .01175f};
+				const glm::vec3 kDiffuse{.61424f, .04136f, .04136f};
+				const glm::vec3 kSpecular{.727811f, .626959f, .626959f};
+				const float kShininess = .6f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
 			case MaterialType::kSilver: {
-				glm::vec3 kAmbient{.19225f, .19225f, .19225f};
-				glm::vec3 kDiffuse{.50754f, .50754f, .50754f};
-				glm::vec3 kSpecular{.508273f, .508273f, .508273f};
-				auto kShininess = .4f;
+                const glm::vec3 kAmbient{ .19225f, .19225f, .19225f };
+                const glm::vec3 kDiffuse{ .50754f, .50754f, .50754f };
+                const glm::vec3 kSpecular{ .508273f, .508273f, .508273f };
+                const float kShininess = .4f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
 			case MaterialType::kTurquoise: {
-                glm::vec3 kAmbient{ .1f, .18725f, .1745f };
-                glm::vec3 kDiffuse{ .396f, .74151f, .69102f };
-                glm::vec3 kSpecular{ .297254f, .30829f, .306678f };
-                auto kShininess = .1f;
+                const glm::vec3 kAmbient{ .1f, .18725f, .1745f };
+                const glm::vec3 kDiffuse{ .396f, .74151f, .69102f };
+                const glm::vec3 kSpecular{ .297254f, .30829f, .306678f };
+                const float kShininess = .1f;
 				return Material{kAmbient, kDiffuse, kSpecular, kShininess};
 			}
 			default:
